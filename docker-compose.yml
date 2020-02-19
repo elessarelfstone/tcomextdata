@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  luigid:
+    container_name: luigid
+    image: axiom/docker-luigi:latest-alpine
+    volumes:
+      - "./logging.conf:/etc/luigi/logging.conf"
+      - "./luigi.conf:/etc/luigi/luigi.conf"
+      - "~/data/log/:/var/log/"
+
+    environment:
+       LUIGI_CONFIG_PARSER: conf
+
+  telextdata:
+    build: .
+    image: telextdata
+    container_name: telextdata
+#    volumes:
+#      - ""
+
+  cronicle:
+    image: nicholasamorim/cronicle
+    container_name: cronicle
+
+
