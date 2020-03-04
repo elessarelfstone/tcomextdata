@@ -1,7 +1,9 @@
 import os
 from tempfile import gettempdir
 
-TMP_DIR = gettempdir()
+# TMP_DIR = gettempdir()
+TMP_DIR = os.path.join(os.path.expanduser('~'), 'data')
+
 
 WORK_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(WORK_DIR, 'config')

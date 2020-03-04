@@ -16,7 +16,7 @@ config_path = os.path.join(CONFIG_DIR, 'kato.conf')
 add_config_path(config_path)
 
 
-@dataclass()
+@dataclass
 class Row:
     te: str
     ab: str

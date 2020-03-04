@@ -27,9 +27,6 @@ class RetrieveWebDataFile(luigi.Task):
         return luigi.LocalTarget(fpath)
 
     def run(self):
-        # build path for downloading file
-        # fpath = os.path.join(TMP_DIR, self.name)
-
         # download file and get format(rar, zip, xls, etc) of file
         frmt = save_webfile(self.url, self.output().path)
 
@@ -58,6 +55,15 @@ class RetrieveWebDataFileFromArchive(luigi.Task):
         unpack(fpath, frmt, [t.path for t in self.output()])
 
 
+class ParseJavaScript(luigi.Task):
+
+    url = luigi.Parameter(default='')
+    name = luigi.Parameter(default='')
+
+    def output(self):
+        return luigi.LocalTarget(build_fpath(TMP_DIR, self.name, 'csv'))
+
+
 @requires(RetrieveWebDataFile)
 class ParseWebExcelFile(luigi.Task):
 
@@ -67,6 +73,7 @@ class ParseWebExcelFile(luigi.Task):
 
     def output(self):
         return luigi.LocalTarget(build_fpath(TMP_DIR, self.name, 'csv'))
+
 
 
 @requires(RetrieveWebDataFileFromArchive)
@@ -82,7 +89,7 @@ class ParseWebExcelFileFromArchive(luigi.Task):
 
 class GzipToFtp(luigi.Task):
 
-    # date = luigi.DateParameter()
+    date = luigi.DateParameter(default=None)
 
     def output(self):
         _ftp_path = os.path.join(FTP_PATH, gziped_fname(self.input().path))
@@ -90,6 +97,5 @@ class GzipToFtp(luigi.Task):
                             username=FTP_USER, password=FTP_PASS)
 
     def run(self):
-        _path = self.input().path
-        gzfpath = gzip_file(_path)
-        self.output().put(gzfpath, atomic=False)
+        _fpath = gzip_file(self.input().path)
+        self.output().put(_fpath, atomic=False)

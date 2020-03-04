@@ -1,6 +1,7 @@
 import re
 import os
 import urllib3
+from os.path import basename
 from dataclasses import dataclass, astuple
 from shutil import move
 
@@ -13,7 +14,7 @@ from tcomextdata.lib.excel import parse
 from tcomextdata.lib.utils import save_to_csv, save_webfile, build_fpath
 from tcomextdata.lib.unpacking import unpack, zipo_flist
 from settings import CONFIG_DIR, TMP_DIR
-from tcomextdata.tasks.base import GzipToFtp, BaseConfig, ParseWebExcelFile
+from tcomextdata.tasks.base import GzipToFtp, BaseConfig
 
 config_path = os.path.join(CONFIG_DIR, 'companies.conf')
 add_config_path(config_path)
@@ -85,8 +86,11 @@ class RetrieveCompaniesWebDataFiles(luigi.Task):
         links = self._links()
         for i, f in enumerate(self.output()):
 
+            # set status
+            self.set_status_message(f'Saving {basename(f.path)}')
+
             # get just filename without extension
-            bsname = os.path.basename(f.path).split('.')[0]
+            bsname = basename(f.path).split('.')[0]
 
             # build path for each zip archive
             fpath = os.path.join(TMP_DIR, f'{bsname}.zip')
@@ -100,6 +104,10 @@ class RetrieveCompaniesWebDataFiles(luigi.Task):
             src = os.path.join(folder, flist[0])
             # rename xls file to file in output()
             move(src, f.path)
+
+            percent = round((i+1)*100/len(self.output()))
+            self.set_progress_percentage(percent)
+            # progress_luigi_status(self, len(self.output()), i, f'Saving {}')
 
 
 @requires(RetrieveCompaniesWebDataFiles)
@@ -134,11 +142,4 @@ class Companies(luigi.WrapperTask):
 
 if __name__ == '__main__':
     luigi.run()
-
-
-
-
-
-
-
 
