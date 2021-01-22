@@ -123,3 +123,14 @@ ssh.EXE.stackdump
 
 # configs
 *.cfg
+
+# luigi events logs(success, failures) and
+# configs storage
+.postgres/
+
+# temp data of pipelines
+.data/
+.bigdata/
+
+# luigi logs
+.logs/

@@ -1,0 +1,27 @@
+kato:
+  url: https://stat.gov.kz/api/getFile/?docId=ESTAT310324
+  skiptop: 3
+
+goszakup_contracts:
+  entity_name: Contract
+  url: https://ows.goszakup.gov.kz/v3/graphql
+  limit: !!int 200
+  timeout: !!int 0
+  key_column: id
+
+goszakup_companies:
+  entity_name: Subjects
+  url: https://ows.goszakup.gov.kz/v3/graphql
+  limit: !!int 200
+  timeout: !!int 10
+  key_column: pid
+
+goszakup_all_companies:
+  url: https://ows.goszakup.gov.kz/v3/subject/all
+  limit: !!int 200
+  timeout: !!int 10
+
+goszakup_untrusted:
+  url: https://ows.goszakup.gov.kz/v3/rnu
+  limit: !!int 500
+  timeout: !!int 15

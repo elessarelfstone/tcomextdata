@@ -1,0 +1,46 @@
+[core]
+scheduler_host = "luigid"
+
+[scheduler]
+record_task_history = true
+state-path = "/var/lib/luigi/luigi-state.pickle"
+
+[task_history]
+db_connection = "postgresql://luigidb:luigidb@luigidb:5432/luigidb"
+
+[logging]
+version = 1
+disable_existing_loggers = false
+
+# logs format
+[logging.formatters.simple]
+format = "{levelname:8} {asctime} {module}:{lineno} {message}"
+style = "{"
+datefmt = "%Y-%m-%d %H:%M:%S"
+
+# write logs to console
+[logging.handlers.console]
+level = "DEBUG"
+class = "logging.StreamHandler"
+formatter = "simple"
+
+# luigi worker logging
+[logging.loggers.luigi-interface]
+handlers = ["console"]
+level = "INFO"
+disabled = false
+propagate = false
+
+# luigid logging
+[logging.loggers.luigi]
+handlers = ["console"]
+level = "INFO"
+disabled = false
+propagate = false
+
+# luigid builded on tornado
+[logging.loggers.tornado]
+handlers = ["console"]
+level = "INFO"
+disabled = false
+propagate = false

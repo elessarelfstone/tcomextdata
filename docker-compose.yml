@@ -1,26 +1,53 @@
-version: '3.7'
+version: '3.8'
 
 services:
-  luigid:
-    container_name: luigid
-    image: axiom/docker-luigi:latest-alpine
-    volumes:
-      - "./logging.conf:/etc/luigi/logging.conf"
-      - "./luigi.conf:/etc/luigi/luigi.conf"
-      - "~/data/log/:/var/log/"
-
+  db:
+    image: postgres:10-alpine
     environment:
-       LUIGI_CONFIG_PARSER: conf
+      POSTGRES_USER: luigidb
+      POSTGRES_DB: luigidb
+      POSTGRES_PASSWORD: "luigidb"
+    container_name: luigidb
+    ports:
+      - 5433:5432
 
-  telextdata:
+  luigi:
+    container_name: luigid
     build: .
-    image: telextdata
-    container_name: telextdata
-#    volumes:
-#      - ""
+    image: luigi
+    environment:
+      TEMP_PATH: /data
+      BIGDATA_TEMP_PATH: /bigdata
+      LOGSPATH: "/var/log/luigi"
+    depends_on:
+      - db
+    volumes:
+      - ./wait-for.sh:/bin/wait-for.sh
+      - ./config/luigi.conf:/etc/luigi/luigi.cfg
+#      - ./config/config.toml:/etc/luigi/luigi.toml
+      - ./config/logging.conf:/etc/luigi/logging.conf
+      - ./.env:/code/.env
 
-  cronicle:
-    image: nicholasamorim/cronicle
-    container_name: cronicle
+    ports:
+      - "8082:8082"
+    restart: always
+    command: luigid
 
-
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes:
+      - "/c/Users/elessar/ftp:/home/ftpuser/"
+    # uncomment for ssl/tls, see https://github.com/stilliard/docker-pure-ftpd#tls
+    #      - "/folder_on_disk/ssl:/etc/ssl/private/"
+    environment:
+      PUBLICHOST: "localhost"
+      FTP_USER_NAME: ftpuser
+      FTP_USER_PASS: ftpuser
+      FTP_USER_HOME: /home/ftpuser
+    # also for ssl/tls:
+    #      ADDED_FLAGS: "--tls=2"
+    restart: always

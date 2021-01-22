@@ -1,0 +1,42 @@
+query getSubjects($from: String, $to: String, $limit: Int, $after: Int){
+    Subjects(filter: {lastUpdateDate: [$from, $to]}, limit: $limit, after: $after) {
+        pid
+        bin
+        iin
+        inn
+        unp
+        regdate
+        crdate
+        number_reg: numberReg
+        series
+        name_ru: nameRu
+        name_kz: nameKz
+        email
+        phone
+        website
+        last_update_date: lastUpdateDate
+        country_code: countryCode
+        qvazi
+        customer
+        organizer
+        mark_national_company: markNationalCompany
+        ref_kopf_code: refKopfCode
+        mark_assoc_with_disab: markAssocWithDisab
+        year
+        mark_resident: markResident
+        system_id: systemId
+        supplier
+        krp_code: krpCode
+        oked_list: okedList
+        kse_code: kseCode
+        mark_world_company: markWorldCompany
+        mark_state_monopoly: markStateMonopoly
+        mark_natural_monopoly: markNaturalMonopoly
+        mark_patronymic_producer: markPatronymicProducer
+        mark_patronymic_supplyer: markPatronymicSupplyer
+        mark_small_employer: markSmallEmployer
+        type_supplier: typeSupplier
+        is_single_org: isSingleOrg
+        index_date: indexDate
+    }
+}
